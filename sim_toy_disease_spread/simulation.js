@@ -132,6 +132,7 @@ function simulation_update_interactions(simulation)
 		simulation.subjects[i].in_contact_with = b
 	}
 
+	let max_sick_across_config = 0
 
 	let iteration_status = []
 	for (let i=0;i<simulation.m;++i) {
@@ -162,11 +163,14 @@ function simulation_update_interactions(simulation)
 			recovered: recovered
 		})
 
+		max_sick_across_config = Math.max(max_sick_across_config, sick)
+
 		simulation.max_sick[i] = Math.max(simulation.max_sick[i], sick)
 
 	}
 
 	simulation.history.push(iteration_status)
+	simulation.done = max_sick_across_config == 0
 
 }
 
@@ -187,6 +191,7 @@ function simulation_init(n, radius, width, height, contagion_probs, recovery_ste
 		contagion_probs: contagion_probs,
 		recovery_steps: recovery_steps,
 		max_sick: new Array(m).fill(0),
+		done: false,
 		history: []
 	}
 
@@ -374,11 +379,13 @@ function render_simulation(simulation)
 		//
 		for (let j=0;j<simulation.n;++j) {
 			let subject = simulation.subjects[j]
-			let hs = subject.health_status[i]
-			if (hs == 0) {
+
+			let health = aux_health_status_(subject.health_status[i], simulation.iteration, recovery_steps)
+
+			if (health == STATUS_HEALTHY) {
 				// never infected
 				ctx.fillStyle = COLOR_HEALTHY
-			} else if (simulation.iteration - hs <= recovery_steps) {
+			} else if (health == STATUS_SICK) {
 				// sick
 				ctx.fillStyle = COLOR_SICK
 			} else {
@@ -408,13 +415,12 @@ function update()
 {
 	if (global.simulation) {
 		render_simulation(global.simulation)
+		if (global.simulation.done) {
+			return
+		}
 	}
 
-	// // schedule a redraw
-	// if (global.simulation.iteration < 10000)
-
-	// step simulation
-	if (global.running && global.running) {
+	if (global.simulation && global.running) {
 		simulation_step(global.simulation)
 		setTimeout(update, 16)
 	}

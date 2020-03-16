@@ -539,7 +539,7 @@ function main()
 			let col = row.appendChild(document.createElement('td'));
 			let contagion_probs_input = col.appendChild(document.createElement('input'));
 			contagion_probs_input.type = 'text'
-			contagion_probs_input.value = '0.25 0.5 1.0'
+			contagion_probs_input.value = '0.125 0.25 0.5 1.0'
 			global.ui.contagion_probs_input = contagion_probs_input
 		}
 	}
@@ -550,7 +550,7 @@ function main()
 		{
 			let col = row.appendChild(document.createElement('td'));
 			let label = col.appendChild(document.createElement('label'));
-			label.innerText='Recovery Steps:'
+			label.innerText='Recovery Steps (px):'
 		}
 		{
 			let col = row.appendChild(document.createElement('td'));
@@ -655,7 +655,13 @@ function main()
 	h: healthy count<br><br>
 	r: recovered count<br><br>
 	s: sick count<br><br>
-	Ms: max sick count ever</p>`
+	Ms: max sick count ever<br><br>
+	- One person sick to start with.<br>
+	- Same population dynamics in all panels<br>
+	- One 'coin-flip' per interaction thresholded 
+	  by the different contagion prob. for the
+	  transmission
+	</p>`
 
 
 

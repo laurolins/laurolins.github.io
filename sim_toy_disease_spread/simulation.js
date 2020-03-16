@@ -72,6 +72,8 @@ function simulation_update_interactions(simulation)
 
 		++new_interactions
 
+		let coin_flip = Math.random()
+
 		// same dynamic with different parameters
 		// update the status of each simulation
 		for (let i=0;i<simulation.m;++i) {
@@ -85,7 +87,7 @@ function simulation_update_interactions(simulation)
 
 			if (subject_a_status == STATUS_HEALTHY && subject_b_status == STATUS_SICK) {
 				// b might contaminate a now
-				let contaminate = Math.random() <= infection_rate
+				let contaminate = coin_flip <= infection_rate
 				if (contaminate) {
 					subject_a.health_status[i] = simulation.iteration
 					++new_contamination
@@ -93,7 +95,7 @@ function simulation_update_interactions(simulation)
 			} else if (subject_a_status == STATUS_SICK && subject_b_status == STATUS_HEALTHY) {
 				// a might contaminate b now
 				// b might contaminate a now
-				let contaminate = Math.random() <= infection_rate
+				let contaminate = coin_flip <= infection_rate
 				if (contaminate) {
 					subject_b.health_status[i] = simulation.iteration
 					++new_contamination
@@ -147,10 +149,11 @@ function simulation_update_interactions(simulation)
 
 		for (let j=0;j<simulation.n;j++) {
 			let subject = simulation.subjects[j]
-			let hs = subject.health_status[i] 
-			if (hs == 0) {
+
+			let health = aux_health_status_(subject.health_status[i], simulation.iteration, recovery_steps)
+			if (health == STATUS_HEALTHY) {
 				++healthy
-			} else if (simulation.iteration - hs < recovery_steps) {
+			} else if (health == STATUS_SICK) {
 				++sick
 			} else {
 				++recovered

@@ -60,8 +60,7 @@ function simulation_update_interactions(simulation)
 		}
 	}
 
-	let new_interactions  = 0
-	let new_contamination = 0
+	let new_interactions   = 0
 
 	// check for each subject the new interactions found and
 	// update their health status based on these interactions
@@ -90,7 +89,6 @@ function simulation_update_interactions(simulation)
 				let contaminate = coin_flip <= infection_rate
 				if (contaminate) {
 					subject_a.health_status[i] = simulation.iteration
-					++new_contamination
 				}
 			} else if (subject_a_status == STATUS_SICK && subject_b_status == STATUS_HEALTHY) {
 				// a might contaminate b now
@@ -98,7 +96,6 @@ function simulation_update_interactions(simulation)
 				let contaminate = coin_flip <= infection_rate
 				if (contaminate) {
 					subject_b.health_status[i] = simulation.iteration
-					++new_contamination
 				}
 			}
 		}
@@ -175,6 +172,8 @@ function simulation_update_interactions(simulation)
 	simulation.history.push(iteration_status)
 	simulation.done = max_sick_across_config == 0
 
+	simulation.pairwise_interactions   += new_interactions
+
 }
 
 function simulation_init(n, radius, width, height, contagion_probs, recovery_steps, static_population_ratio)
@@ -195,7 +194,8 @@ function simulation_init(n, radius, width, height, contagion_probs, recovery_ste
 		recovery_steps: recovery_steps,
 		max_sick: new Array(m).fill(0),
 		done: false,
-		history: []
+		history: [],
+		pairwise_interactions: 0
 	}
 
 	let mobile_subjects = Math.round((1.0-static_population_ratio) * n)
@@ -264,7 +264,6 @@ function simulation_step(simulation)
 	simulation.iteration++
 	simulation_update_interactions(simulation)
 }
-
 
 function render_simulation(simulation)
 {
@@ -376,10 +375,13 @@ function render_simulation(simulation)
 			ctx.fill();
 
 			if (j == len-1) {
+
+				let inter = simulation.pairwise_interactions
+
 				// write the number
 				ctx.textAlign="left"
-				let header_text = "it: "+ simulation.iteration + " cp: "+infection_rate+ "  rs: " 
-					+ recovery_steps + " h: " +data.healthy + " r: " +data.recovered + " s: " +data.sick  + " Ms: " + simulation.max_sick[i]
+				let header_text = "it:" + simulation.iteration  + " pi:" + inter + " cp:"+infection_rate+ " rs:" 
+					+ recovery_steps + " h:" +data.healthy + " r:" +data.recovered + " s:" +data.sick  + " Ms:" + simulation.max_sick[i]
 				ctx.fillStyle = "white"
 				ctx.fillText(header_text, header_view[0] + 5, header_view[1] + header_view[3]/2 + 4)
 			}
@@ -556,7 +558,7 @@ function main()
 			let col = row.appendChild(document.createElement('td'));
 			let recovery_steps_input = col.appendChild(document.createElement('input'));
 			recovery_steps_input.type = 'text'
-			recovery_steps_input.value = '125 250'
+			recovery_steps_input.value = '250 375'
 			global.ui.recovery_steps_input = recovery_steps_input
 		}
 	}
@@ -650,6 +652,7 @@ function main()
 	info_div.innerHTML=`<p>
 	Legend:<br><br>
 	it: iteration<br><br>
+	pi: pairwise interactions<br><br>
 	cp: contagion prob. on interaction<br><br>
 	rs: recovery steps<br><br>
 	h: healthy count<br><br>

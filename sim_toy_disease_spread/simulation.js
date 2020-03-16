@@ -324,12 +324,13 @@ function render_simulation(simulation)
 
 		// let dx = tseries_view[2] / iterations
 		let len = Math.min(max_iter, iterations)
+
+		// for perf. factor the three color bars
+		ctx.fillStyle = COLOR_HEALTHY
 		for (let j=0;j<len;++j) {
 			// use first and last
 			let index = j 
-			if (iterations > max_iter) {
-				index = Math.floor(j/(len-1) * (iterations-1))
-			}
+			if (iterations > max_iter) { index = Math.floor(j/(len-1) * (iterations-1)) }
 
 			let data = simulation.history[index][i]
 			let height_healthy   = (data.healthy * tseries_view[3]) / simulation.n
@@ -338,20 +339,37 @@ function render_simulation(simulation)
 
 			ctx.beginPath();
 			ctx.rect(tseries_view[0] + j, tseries_view[1], 1, height_healthy);
-			ctx.fillStyle = COLOR_HEALTHY
-			// ctx.fillStyle = "black";
 			ctx.fill();
+		}
+
+		ctx.fillStyle = COLOR_RECOVERED
+		for (let j=0;j<len;++j) {
+			// use first and last
+			let index = j 
+			if (iterations > max_iter) { index = Math.floor(j/(len-1) * (iterations-1)) }
+
+			let data = simulation.history[index][i]
+			let height_healthy   = (data.healthy * tseries_view[3]) / simulation.n
+			let height_recovered = (data.recovered * tseries_view[3]) / simulation.n 
 
 			ctx.beginPath();
 			ctx.rect(tseries_view[0] + j, tseries_view[1] + height_healthy, 1, height_recovered);
-			ctx.fillStyle = COLOR_RECOVERED
-			// ctx.fillStyle = "black";
 			ctx.fill();
+		}
+
+		ctx.fillStyle = COLOR_SICK
+		for (let j=0;j<len;++j) {
+			// use first and last
+			let index = j 
+			if (iterations > max_iter) { index = Math.floor(j/(len-1) * (iterations-1)) }
+
+			let data = simulation.history[index][i]
+			let height_healthy   = (data.healthy * tseries_view[3]) / simulation.n
+			let height_recovered = (data.recovered * tseries_view[3]) / simulation.n 
+			let height_sick = (data.sick * tseries_view[3]) / simulation.n 
 
 			ctx.beginPath();
 			ctx.rect(tseries_view[0] + j, tseries_view[1] + height_healthy + height_recovered, 1, height_sick);
-			ctx.fillStyle = COLOR_SICK
-			// ctx.fillStyle = "black";
 			ctx.fill();
 
 			if (j == len-1) {

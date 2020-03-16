@@ -75,10 +75,10 @@ function simulation_update_interactions(simulation)
 		// same dynamic with different parameters
 		// update the status of each simulation
 		for (let i=0;i<simulation.m;++i) {
-			let recovery_steps_index = Math.floor(i / simulation.infection_rates.length)
-			let infection_rate_index = i % simulation.infection_rates.length
+			let recovery_steps_index = Math.floor(i / simulation.contagion_probs.length)
+			let infection_rate_index = i % simulation.contagion_probs.length
 			let recovery_steps = simulation.recovery_steps[recovery_steps_index]
-			let infection_rate = simulation.infection_rates[infection_rate_index]
+			let infection_rate = simulation.contagion_probs[infection_rate_index]
 
 			let subject_a_status = aux_health_status_(subject_a.health_status[i], simulation.iteration, recovery_steps)
 			let subject_b_status = aux_health_status_(subject_b.health_status[i], simulation.iteration, recovery_steps)
@@ -135,10 +135,10 @@ function simulation_update_interactions(simulation)
 
 	let iteration_status = []
 	for (let i=0;i<simulation.m;++i) {
-		let recovery_steps_index = Math.floor(i / simulation.infection_rates.length)
-		let infection_rate_index = i % simulation.infection_rates.length
+		let recovery_steps_index = Math.floor(i / simulation.contagion_probs.length)
+		let infection_rate_index = i % simulation.contagion_probs.length
 		let recovery_steps = simulation.recovery_steps[recovery_steps_index]
-		let infection_rate = simulation.infection_rates[infection_rate_index]
+		let infection_rate = simulation.contagion_probs[infection_rate_index]
 
 		let healthy = 0
 		let sick = 0
@@ -170,9 +170,9 @@ function simulation_update_interactions(simulation)
 
 }
 
-function simulation_init(n, radius, width, height, infection_rates, recovery_steps)
+function simulation_init(n, radius, width, height, contagion_probs, recovery_steps, static_population_ratio)
 {
-	let m = infection_rates.length * recovery_steps.length
+	let m = contagion_probs.length * recovery_steps.length
 	let simulation = {
 		n:      n, // population size
 		width:  width,
@@ -181,24 +181,34 @@ function simulation_init(n, radius, width, height, infection_rates, recovery_ste
 		hit_distance2: (2*radius) * (2*radius),
 		step_length: 1,
 		iteration: 1,
+		static_population_ratio: static_population_ratio,
 		subjects: [],
 		m: m,
-		infection_rates: infection_rates,
+		contagion_probs: contagion_probs,
 		recovery_steps: recovery_steps,
 		max_sick: new Array(m).fill(0),
 		history: []
 	}
 
+	let mobile_subjects = Math.round((1.0-static_population_ratio) * n)
+	// the sick subject
+
 	for (let i=0;i<n;i++) {
-		let theta = Math.random() * Math.PI * 2
+		let vx = 0.0
+		let vy = 0.0
+		if (i < mobile_subjects) { 
+			let theta = Math.random() * Math.PI * 2
+			vx = Math.cos(theta)
+			vy = Math.sin(theta)
+		}
 
 		health_status = (i==0) ? 1 :  0
 
 		simulation.subjects.push( {
 			px: Math.random() * simulation.width,
 			py: Math.random() * simulation.height,
-			vx: Math.cos(theta),
-			vy: Math.sin(theta),
+			vx: vx,
+			vy: vy,
 			interaction_count: 0,
 			in_contact_with: new Set(),
 			health_status: new Array(simulation.m).fill(health_status) 
@@ -281,14 +291,14 @@ function render_simulation(simulation)
 	let width = hmargin + simulation.width
 	let height = vmargin + height_header + height_tseries + vmargin + height_world
 
-	let ncol = simulation.infection_rates.length
+	let ncol = simulation.contagion_probs.length
 	let nrow = simulation.recovery_steps.length
 
 	for (let i=0;i<simulation.m;i++) {
-		let row = Math.floor(i / simulation.infection_rates.length)
-		let col = i % simulation.infection_rates.length
+		let row = Math.floor(i / simulation.contagion_probs.length)
+		let col = i % simulation.contagion_probs.length
 
-		let infection_rate = simulation.infection_rates[col]
+		let infection_rate = simulation.contagion_probs[col]
 		let recovery_steps = simulation.recovery_steps[row]
 
 		// x0, y0, width, height
@@ -412,10 +422,15 @@ function update()
 
 function reset_simulation()
 {
-	// parse population
 	let population = parseInt(global.ui.population_input.value)
 	if (isNaN(population)) {
 		alert("Error parsing Population")
+		return
+	}
+
+	let social_distancing = parseFloat(global.ui.social_distancing_input.value)
+	if (isNaN(social_distancing)) {
+		alert("Error parsing Social Distancing")
 		return
 	}
 
@@ -448,7 +463,7 @@ function reset_simulation()
 	}
 
 	// set global simulation
-	global.simulation = simulation_init(population, radius, panel_size, panel_size, contagion_probs, recovery_steps)
+	global.simulation = simulation_init(population, radius, panel_size, panel_size, contagion_probs, recovery_steps, social_distancing)
 	global.running = false
 }
 
@@ -516,6 +531,23 @@ function main()
 			recovery_steps_input.type = 'text'
 			recovery_steps_input.value = '125 250'
 			global.ui.recovery_steps_input = recovery_steps_input
+		}
+	}
+
+	{
+		// panel size 
+		let row = table.appendChild(document.createElement('tr'))
+		{
+			let col = row.appendChild(document.createElement('td'));
+			let label = col.appendChild(document.createElement('label'));
+			label.innerText='Social Distancing:'
+		}
+		{
+			let col = row.appendChild(document.createElement('td'));
+			let social_distancing_input = col.appendChild(document.createElement('input'));
+			social_distancing_input.type = 'text'
+			social_distancing_input.value = '0.25'
+			global.ui.social_distancing_input = social_distancing_input
 		}
 	}
 
@@ -638,7 +670,7 @@ function main()
 	body.appendChild(controls_div)
 	body.appendChild(main_div)
 
-	// function simulation_init(n, width, height, radius, infection_rates, recovery_steps)
+	// function simulation_init(n, width, height, radius, contagion_probs, recovery_steps)
 	// global.simulation = simulation_init(100, 3, 250, 250, [1, 0.5, 0.25], [125,250])
 
 	setTimeout(update, 16)

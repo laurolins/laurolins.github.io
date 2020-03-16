@@ -8,6 +8,11 @@ const COLOR_HEALTHY   = "#00008880"
 const COLOR_SICK      = "#88000080"
 const COLOR_RECOVERED = "#00880080"
 
+const COLOR_HEALTHY_STATIC   = "#000088F0"
+const COLOR_SICK_STATIC      = "#880000F0"
+const COLOR_RECOVERED_STATIC = "#008800F0"
+
+
 const STATUS_HEALTHY   = 0
 const STATUS_SICK      = 1
 const STATUS_RECOVERED = 2
@@ -405,15 +410,18 @@ function render_simulation(simulation)
 
 			let health = aux_health_status_(subject.health_status[i], simulation.iteration, recovery_steps)
 
+			let is_static = subject.vx == 0.0 && subject.vy == 0.0
+
+
 			if (health == STATUS_HEALTHY) {
 				// never infected
-				ctx.fillStyle = COLOR_HEALTHY
+				ctx.fillStyle = is_static ? COLOR_HEALTHY_STATIC : COLOR_HEALTHY
 			} else if (health == STATUS_SICK) {
 				// sick
-				ctx.fillStyle = COLOR_SICK
+				ctx.fillStyle = is_static ? COLOR_SICK_STATIC : COLOR_SICK
 			} else {
 				// recovered
-				ctx.fillStyle = COLOR_RECOVERED
+				ctx.fillStyle = is_static ? COLOR_RECOVERED_STATIC : COLOR_RECOVERED
 			}
 
 			let px = world_view[0] + subject.px
@@ -426,10 +434,10 @@ function render_simulation(simulation)
 			ctx.closePath()
 			ctx.fill()
 
+
 			if (subject.in_contact_with.length > 0) {
 				ctx.stroke()
 			}
-
 		}
 	}
 }

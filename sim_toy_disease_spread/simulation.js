@@ -752,7 +752,7 @@ function main()
 			let speed_input = col.appendChild(document.createElement('input'));
 			speed_input.style.width = 20
 			speed_input.type = 'text'
-			speed_input.value = '1'
+			speed_input.value = '10'
 			global.ui.speed_input = speed_input
 
 			window.addEventListener("keydown", function(e) {

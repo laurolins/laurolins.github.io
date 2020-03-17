@@ -748,7 +748,6 @@ function main()
 	// info_div.style.fontClass="12 Monaco"
 	info_div.style = "padding: 5px"
 	info_div.innerHTML=`<p>
-	Legend:<br><br>
 	it: iteration<br><br>
 	pi: pairwise interactions<br><br>
 	cp: contagion prob. on interaction<br><br>

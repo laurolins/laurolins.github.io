@@ -1,3 +1,6 @@
+const KEY_ENTER=13
+const KEY_BACKQUOTE=192
+
 var global = {
 	speed: 1,
 	running: false,
@@ -5,14 +8,36 @@ var global = {
 	ui: {}
 }
 
-const COLOR_HEALTHY   = "#00008880"
-const COLOR_SICK      = "#88000080"
-const COLOR_RECOVERED = "#00880080"
+// const COLOR_HEALTHY          = "#000088"
+// const COLOR_SICK             = "#880000"
+// const COLOR_RECOVERED        = "#444488"
 
-const COLOR_HEALTHY_STATIC   = "#000088F0"
-const COLOR_SICK_STATIC      = "#880000F0"
-const COLOR_RECOVERED_STATIC = "#008800F0"
+const COLOR_HEALTHY          = "#2869AD"
+const COLOR_SICK             = "#C5542F"
+const COLOR_RECOVERED        = "#F5BB77"
 
+// #595959"
+
+// const COLOR_HEALTHY_STATIC   = "#000088F0"
+// const COLOR_SICK_STATIC      = "#880000F0"
+// const COLOR_RECOVERED_STATIC = "#008800F0"
+
+const COLOR_CONTROLS_BG      = '#A0A0A0'
+const COLOR_SIMULATION_BG    = '#FFFFFF'
+const COLOR_TSERIES_BG       = '#888888'
+// const COLOR_WORLD_BG         = '#666666'
+// const COLOR_WORLD_BG         = '#000000'
+const COLOR_WORLD_BG         = '#f0f0f0'
+
+// const COLOR_HEALTHY          = "#ABC7CA"
+// const COLOR_SICK             = "#BB652E"
+// const COLOR_RECOVERED        = "#CB8AC0"
+
+const COLOR_INCIDENT         = '#ffffff'
+
+// const COLOR_HEALTHY_STATIC   = "#ABC7CAF8"
+// const COLOR_SICK_STATIC      = "#BB652EF8"
+// const COLOR_RECOVERED_STATIC = "#CB8AC0F8"
 
 const STATUS_HEALTHY   = 0
 const STATUS_SICK      = 1
@@ -185,11 +210,13 @@ function simulation_update_interactions(simulation)
 function simulation_init(population, initially_sick, radius, width, height, contagion_probs, recovery_steps, static_population_ratio)
 {
 	let m = contagion_probs.length * recovery_steps.length
+	let sim_area_margin = radius + 4
 	let simulation = {
 		n:      population, // population size
 		initially_sick: initially_sick,
-		width:  width,
-		height: height,
+		sim_area: [sim_area_margin, sim_area_margin, width, height],
+		width:  width + 2*sim_area_margin,
+		height: height + 2*sim_area_margin,
 		radius: radius,
 		hit_distance2: (2*radius) * (2*radius),
 		step_length: 1,
@@ -222,8 +249,8 @@ function simulation_init(population, initially_sick, radius, width, height, cont
 		health_status = (i < simulation.initially_sick) ? 1 :  0
 
 		simulation.subjects.push( {
-			px: Math.random() * simulation.width,
-			py: Math.random() * simulation.height,
+			px: simulation.sim_area[0] + Math.random() * simulation.sim_area[2],
+			py: simulation.sim_area[1] + Math.random() * simulation.sim_area[3],
 			vx: vx,
 			vy: vy,
 			interaction_count: 0,
@@ -249,20 +276,26 @@ function simulation_move_subjects(simulation)
 		subject.px += subject.vx
 		subject.py += subject.vy
 
-		if (subject.px < 0) {
+		let sim_area = simulation.sim_area
+		let x0 = sim_area[0]
+		let y0 = sim_area[1]
+		let x1 = sim_area[0] + sim_area[2]
+		let y1 = sim_area[1] + sim_area[3]
+
+		if (subject.px < x0) {
 			subject.vx = -subject.vx
-			subject.px = -subject.px
-		} else if (subject.px >= simulation.width) {
+			subject.px = 2*x0 - subject.px
+		} else if (subject.px >= x1) {
 			subject.vx = -subject.vx
-			subject.px = simulation.width - (subject.px - simulation.width)
+			subject.px = 2*x1 - subject.px
 		}
 
-		if (subject.py < 0) {
+		if (subject.py < y0) {
 			subject.vy = -subject.vy
-			subject.py = -subject.py
-		} else if (subject.py >= simulation.width) {
+			subject.py = 2*y0 - subject.py
+		} else if (subject.py >= y1) {
 			subject.vy = -subject.vy
-			subject.py = simulation.width - (subject.py - simulation.width)
+			subject.py = 2*y1 - subject.py
 		}
 	}
 }
@@ -291,12 +324,14 @@ function render_simulation(simulation)
 	ctx.beginPath();
 	ctx.rect(0, 0, canvas.width, canvas.height);
 	ctx.closePath();
-	ctx.fillStyle = "black";
+	ctx.fillStyle = COLOR_SIMULATION_BG;
 	// ctx.fillStyle = "black";
 	ctx.fill();
 
-	let hmargin = 20
-	let vmargin = 5
+	let hmargin0 = 15 
+	let hmargin = 30
+	let vmargin0 = 5
+	let vmargin = 5 + simulation.radius
 
 	let height_header = 18
 	let width_header = simulation.width
@@ -318,9 +353,9 @@ function render_simulation(simulation)
 		let recovery_steps = simulation.recovery_steps[row]
 
 		// x0, y0, width, height
-		let header_view   = [ col * width + hmargin, row * height + vmargin, width_header, height_header]
-		let tseries_view  = [ col * width + hmargin, row * height + vmargin + height_header , width_tseries, height_tseries ]
-		let world_view    = [ col * width + hmargin, row * height + vmargin + height_header + height_tseries + vmargin, width_world, height_world]
+		let header_view   = [ col * width + hmargin0, row * height + vmargin0, width_header, height_header]
+		let tseries_view  = [ col * width + hmargin0, row * height + vmargin0 + height_header , width_tseries, height_tseries ]
+		let world_view    = [ col * width + hmargin0, row * height + vmargin0 + height_header + height_tseries + vmargin, width_world, height_world]
 
 
 		//-----------------
@@ -332,6 +367,10 @@ function render_simulation(simulation)
 		let iterations = simulation.history.length
 		let max_iter = tseries_view[2]
 
+		ctx.fillStyle = COLOR_TSERIES_BG
+		ctx.beginPath()
+		ctx.rect(tseries_view[0], tseries_view[1], tseries_view[2], tseries_view[3])
+		ctx.fill()
 
 		// let dx = tseries_view[2] / iterations
 		let len = Math.min(max_iter, iterations)
@@ -391,7 +430,7 @@ function render_simulation(simulation)
 				ctx.textAlign="left"
 				let header_text = "it:" + simulation.iteration  + " pi:" + inter + " cp:"+infection_rate+ " rs:" 
 					+ recovery_steps + " h:" +data.healthy + " r:" +data.recovered + " s:" +data.sick  + " Ms:" + simulation.max_sick[i]
-				ctx.fillStyle = "white"
+				ctx.fillStyle = "black"
 				ctx.fillText(header_text, header_view[0] + 5, header_view[1] + header_view[3]/2 + 4)
 			}
 		}
@@ -400,16 +439,11 @@ function render_simulation(simulation)
 		// World
 		//-----------------
 		
-		ctx.beginPath();
-		ctx.rect(world_view[0], world_view[1], world_view[2], world_view[3]);
-		ctx.closePath();
-		ctx.fillStyle = "black";
-		// ctx.fillStyle = "black";
-		ctx.fill();
+		ctx.fillStyle = COLOR_WORLD_BG
+		ctx.beginPath()
+		ctx.rect(world_view[0], world_view[1], world_view[2], world_view[3])
+		ctx.fill()
 
-		ctx.strokeStyle = "#ffffff60";
-
-		
 		// 
 		let groups = []
 
@@ -433,13 +467,13 @@ function render_simulation(simulation)
 			let is_static = group[1]
 			if (health == STATUS_HEALTHY) {
 				// never infected
-				ctx.fillStyle = is_static ? COLOR_HEALTHY_STATIC : COLOR_HEALTHY
+				ctx.fillStyle = COLOR_HEALTHY//  + (is_static ? 'FF' : '8f')
 			} else if (health == STATUS_SICK) {
 				// sick
-				ctx.fillStyle = is_static ? COLOR_SICK_STATIC : COLOR_SICK
+				ctx.fillStyle = COLOR_SICK// + (is_static ? 'FF' : '8f')
 			} else {
 				// recovered
-				ctx.fillStyle = is_static ? COLOR_RECOVERED_STATIC : COLOR_RECOVERED
+				ctx.fillStyle = COLOR_RECOVERED // + (is_static ? 'FF' : '8f')
 			}
 		}
 
@@ -462,13 +496,19 @@ function render_simulation(simulation)
 			let py = world_view[1] + subject.py
 
 			let r = simulation.radius
-			ctx.moveTo(px,py)
-			ctx.arc(px,py,r,0,2*Math.PI)
+			if (group[1]) {
+				// static are squares
+				ctx.rect(px-r,py-r,2*r,2*r) // 0,2*Math.PI)
+			} else {
+				ctx.moveTo(px,py)
+				ctx.arc(px,py,r,0,2*Math.PI)
+			}
 		}
 		if (previous_group) {
 			ctx.fill()
 		}
 
+		ctx.fillStyle = COLOR_INCIDENT // ffffff60;
 		ctx.beginPath()
 		for (let j=0;j<groups.length;j++) {
 			let subject = simulation.subjects[j]
@@ -477,10 +517,10 @@ function render_simulation(simulation)
 				let py = world_view[1] + subject.py
 				let r = simulation.radius
 				ctx.moveTo(px,py)
-				ctx.arc(px,py,r,0,2*Math.PI)
+				ctx.arc(px,py,1,0,2*Math.PI)
 			}
 		}
-		ctx.stroke()
+		ctx.fill()
 
 		// if (subject.in_contact_with.length > 0) {
 		// 	ctx.stroke()
@@ -576,7 +616,7 @@ function main()
 	let controls_div = document.createElement('div')
 	global.ui.controls_div = controls_div
 	controls_div.id = 'controls_div'
-	controls_div.style = 'position:absolute; width:200px; height:100%; left:0; background-color: #a0a0a0;'
+	controls_div.style = 'position:absolute; width:200px; height:100%; left:0; background-color: '+COLOR_CONTROLS_BG+';'
 
 	let table = controls_div.appendChild(document.createElement('table'))
 	global.ui.table = table
@@ -645,7 +685,7 @@ function main()
 			let col = row.appendChild(document.createElement('td'));
 			let recovery_steps_input = col.appendChild(document.createElement('input'));
 			recovery_steps_input.type = 'text'
-			recovery_steps_input.value = '250 375'
+			recovery_steps_input.value = '230 345'
 			global.ui.recovery_steps_input = recovery_steps_input
 		}
 	}
@@ -696,7 +736,7 @@ function main()
 			let col = row.appendChild(document.createElement('td'));
 			let panel_size_input = col.appendChild(document.createElement('input'));
 			panel_size_input.type = 'text'
-			panel_size_input.value = '250'
+			panel_size_input.value = '230'
 			global.ui.panel_size_input = panel_size_input
 		}
 	}
@@ -714,6 +754,17 @@ function main()
 			speed_input.type = 'text'
 			speed_input.value = '1'
 			global.ui.speed_input = speed_input
+
+			window.addEventListener("keydown", function(e) {
+				if (e.keyCode === KEY_ENTER) {
+					if (document.activeElement == global.ui.speed_input) {
+						let new_speed = parseInt(global.ui.speed_input.value)
+						if (!isNaN(new_speed) && new_speed > 0 && new_speed < 1000) {
+							global.speed = new_speed
+						}
+					}
+				}
+			})
 		}
 		{
 			let col = row.appendChild(document.createElement('td'));
@@ -788,7 +839,7 @@ function main()
 	let main_div = document.createElement('div')
 	global.ui.main_div = main_div
 	main_div.id = 'main_div'
-	main_div.style = 'position:absolute; width:calc(100% - 200px); left: 200px; height:100%; background-color: #000000;'
+	main_div.style = 'position:absolute; width:calc(100% - 200px); left: 200px; height:100%; background-color: '+COLOR_SIMULATION_BG+';'
 
 	let main_canvas = main_div.appendChild(document.createElement('canvas'))
 	global.ui.main_canvas = main_canvas

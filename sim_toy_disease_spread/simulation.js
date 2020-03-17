@@ -1,4 +1,5 @@
 var global = {
+	speed: 1,
 	running: false,
 	simulation: undefined,
 	ui: {}
@@ -404,15 +405,29 @@ function render_simulation(simulation)
 		ctx.fill();
 
 		ctx.strokeStyle = "#ffffff60";
-		//
+
+		
+		// 
+		let groups = []
+
 		for (let j=0;j<simulation.n;++j) {
 			let subject = simulation.subjects[j]
-
 			let health = aux_health_status_(subject.health_status[i], simulation.iteration, recovery_steps)
-
 			let is_static = subject.vx == 0.0 && subject.vy == 0.0
+			groups.push([health, is_static, j])
+		}
 
+		// assume a group is a triple [health, is_static, index]
+		function cmp_group(a,b) {
+			let diff0 = a[0] - b[0]
+			if (diff0) { return diff0 }
+			else { return a[1] - b[1] }
+		}
+		groups.sort(cmp_group)
 
+		function set_group_fill_style(group) {
+			let health = group[0]
+			let is_static = group[1]
 			if (health == STATUS_HEALTHY) {
 				// never infected
 				ctx.fillStyle = is_static ? COLOR_HEALTHY_STATIC : COLOR_HEALTHY
@@ -423,22 +438,50 @@ function render_simulation(simulation)
 				// recovered
 				ctx.fillStyle = is_static ? COLOR_RECOVERED_STATIC : COLOR_RECOVERED
 			}
+		}
 
+		let previous_group = undefined
+		for (let j=0;j<groups.length;j++) {
+			let group = groups[j]
+			if (!previous_group) {				
+				set_group_fill_style(group)
+				ctx.beginPath()
+				previous_group = group
+			} else if (cmp_group(previous_group,group) != 0) {
+				// fill previous group
+				ctx.fill()
+				set_group_fill_style(group)
+				previous_group = group
+				ctx.beginPath()
+			}
+			let subject = simulation.subjects[group[2]]
 			let px = world_view[0] + subject.px
 			let py = world_view[1] + subject.py
 
 			let r = simulation.radius
-
-			ctx.beginPath()
+			ctx.moveTo(px,py)
 			ctx.arc(px,py,r,0,2*Math.PI)
-			ctx.closePath()
+		}
+		if (previous_group) {
 			ctx.fill()
+		}
 
-
-			if (subject.in_contact_with.length > 0) {
-				ctx.stroke()
+		ctx.beginPath()
+		for (let j=0;j<groups.length;j++) {
+			let subject = simulation.subjects[j]
+			if (subject.in_contact_with.length) {
+				let px = world_view[0] + subject.px
+				let py = world_view[1] + subject.py
+				let r = simulation.radius
+				ctx.moveTo(px,py)
+				ctx.arc(px,py,r,0,2*Math.PI)
 			}
 		}
+		ctx.stroke()
+
+		// if (subject.in_contact_with.length > 0) {
+		// 	ctx.stroke()
+		// }
 	}
 }
 
@@ -452,7 +495,9 @@ function update()
 	}
 
 	if (global.simulation && global.running) {
-		simulation_step(global.simulation)
+		for (let i=0;i<global.speed;i++) {
+			simulation_step(global.simulation)
+		}
 		setTimeout(update, 16)
 	}
 }
@@ -462,6 +507,13 @@ function reset_simulation()
 	let population = parseInt(global.ui.population_input.value)
 	if (isNaN(population)) {
 		alert("Error parsing Population")
+		return
+	}
+
+	let speed = parseInt(global.ui.speed_input.value)
+	global.speed = speed
+	if (isNaN(speed)) {
+		alert("Error parsing Speed")
 		return
 	}
 
@@ -627,6 +679,17 @@ function main()
 		let row = table.appendChild(document.createElement('tr'))
 		{
 			let col = row.appendChild(document.createElement('td'));
+			let label = col.appendChild(document.createElement('label'));
+			label.innerText='Speed:'
+			label.style.marginRight='3'
+			let speed_input = col.appendChild(document.createElement('input'));
+			speed_input.style.width = 20
+			speed_input.type = 'text'
+			speed_input.value = '1'
+			global.ui.speed_input = speed_input
+		}
+		{
+			let col = row.appendChild(document.createElement('td'));
 			let reset_input = col.appendChild(document.createElement('input'));
 			reset_input.type = 'button'
 			reset_input.value = 'Reset'
@@ -634,9 +697,6 @@ function main()
 				reset_simulation()
 				update()
 			});
-		}
-		{
-			let col = row.appendChild(document.createElement('td'));
 			let play_input = col.appendChild(document.createElement('input'));
 			play_input.type = 'button'
 			play_input.value = 'Play'

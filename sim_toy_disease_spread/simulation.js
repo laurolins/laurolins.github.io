@@ -756,9 +756,8 @@ function main()
 	r: recovered count<br><br>
 	s: sick count<br><br>
 	Ms: max sick count ever<br><br>
-	- One person sick to start with.<br>
-	- Same population dynamics in all panels<br>
-	- One 'coin-flip' per interaction thresholded 
+	- Same population dynamics on all panels<br>
+	- One 'coin-flip' per pairwise interaction thresholded 
 	  by the different contagion prob. for the
 	  transmission
 	</p>`

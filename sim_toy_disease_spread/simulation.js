@@ -2,6 +2,7 @@ const KEY_ENTER=13
 const KEY_BACKQUOTE=192
 
 var global = {
+	overlay_numbers: true,
 	speed: 1,
 	running: false,
 	simulation: undefined,
@@ -34,6 +35,7 @@ const COLOR_WORLD_BG         = '#f0f0f0'
 // const COLOR_RECOVERED        = "#CB8AC0"
 
 const COLOR_INCIDENT         = '#ffffff'
+// const COLOR_INCIDENT         = '#000000'
 
 // const COLOR_HEALTHY_STATIC   = "#ABC7CAF8"
 // const COLOR_SICK_STATIC      = "#BB652EF8"
@@ -202,6 +204,9 @@ function simulation_update_interactions(simulation)
 
 	simulation.history.push(iteration_status)
 	simulation.done = max_sick_across_config == 0
+	if (simulation.done) {
+		global.running = false
+	}
 
 	simulation.pairwise_interactions   += new_interactions
 
@@ -312,7 +317,6 @@ function render_simulation(simulation)
 	let canvas = global.ui.main_canvas
 	let ctx = canvas.getContext('2d')
 
-	ctx.font = "12 Monaco";
 
 	canvas.width  = window.innerWidth;
 	canvas.height = window.innerHeight;
@@ -376,6 +380,7 @@ function render_simulation(simulation)
 		let len = Math.min(max_iter, iterations)
 
 		// for perf. factor the three color bars
+		ctx.font = "9px Monaco";
 		ctx.fillStyle = COLOR_HEALTHY
 		for (let j=0;j<len;++j) {
 			// use first and last
@@ -428,8 +433,8 @@ function render_simulation(simulation)
 
 				// write the number
 				ctx.textAlign="left"
-				let header_text = "it:" + simulation.iteration  + " pi:" + inter + " cp:"+infection_rate+ " rs:" 
-					+ recovery_steps + " h:" +data.healthy + " r:" +data.recovered + " s:" +data.sick  + " Ms:" + simulation.max_sick[i]
+				let header_text = "it:" + simulation.iteration  + " pi:" + inter + " cp:"+infection_rate+ " rs:" + recovery_steps
+				// + " h:" +data.healthy + " r:" +data.recovered + " s:" +data.sick  + " Ms:" + simulation.max_sick[i]
 				ctx.fillStyle = "black"
 				ctx.fillText(header_text, header_view[0] + 5, header_view[1] + header_view[3]/2 + 4)
 			}
@@ -521,6 +526,52 @@ function render_simulation(simulation)
 			}
 		}
 		ctx.fill()
+
+
+
+		// overlay
+		if (global.overlay_numbers) {
+
+			if (!global.running || global.simulation.done) {
+				ctx.fillStyle = "#ffffff80"
+				ctx.beginPath()
+				ctx.rect(world_view[0], world_view[1], world_view[2], world_view[3])
+				ctx.fill()
+			}
+
+			ctx.font = "28px Monaco";
+			// write the number
+			ctx.textAlign="right"
+			let data = simulation.history[simulation.history.length-1][i]
+			let y0 = 26
+			let dy = 34
+			let y = y0
+			{
+				ctx.fillStyle = COLOR_HEALTHY+ "80"
+				let text = "h:" + data.healthy
+				ctx.fillText(text, world_view[0] + world_view[2] - 10, world_view[1] + y)
+				y += dy
+			}
+			{
+				ctx.fillStyle = COLOR_RECOVERED + "80"
+				let text = "r:" + data.recovered
+				ctx.fillText(text, world_view[0] + world_view[2] - 10, world_view[1] + y)
+				y += dy
+			}
+			{
+				ctx.fillStyle = COLOR_SICK + "80"
+				let text = "s:"+ data.sick
+				ctx.fillText(text, world_view[0] + world_view[2] - 10, world_view[1] + y)
+				y += dy
+			}
+			{
+				ctx.fillStyle = "#ff0000" + "80"
+				let text = "Ms:"+ simulation.max_sick[i]
+				ctx.fillText(text, world_view[0] + world_view[2] - 10, world_view[1] + world_view[3] - 5)
+				y += dy
+			}
+		}
+
 
 		// if (subject.in_contact_with.length > 0) {
 		// 	ctx.stroke()
@@ -806,7 +857,7 @@ function main()
 	h: healthy count<br><br>
 	r: recovered count<br><br>
 	s: sick count<br><br>
-	Ms: max sick count ever<br><br>
+	Ms: max sick simultaneously<br><br>
 	- Same population dynamics on all panels<br>
 	- One 'coin-flip' per pairwise interaction thresholded 
 	  by the different contagion prob. for the

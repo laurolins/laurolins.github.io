@@ -182,11 +182,12 @@ function simulation_update_interactions(simulation)
 
 }
 
-function simulation_init(n, radius, width, height, contagion_probs, recovery_steps, static_population_ratio)
+function simulation_init(population, initially_sick, radius, width, height, contagion_probs, recovery_steps, static_population_ratio)
 {
 	let m = contagion_probs.length * recovery_steps.length
 	let simulation = {
-		n:      n, // population size
+		n:      population, // population size
+		initially_sick: initially_sick,
 		width:  width,
 		height: height,
 		radius: radius,
@@ -204,6 +205,8 @@ function simulation_init(n, radius, width, height, contagion_probs, recovery_ste
 		pairwise_interactions: 0
 	}
 
+	let n = population
+
 	let mobile_subjects = Math.round((1.0-static_population_ratio) * n)
 	// the sick subject
 
@@ -216,7 +219,7 @@ function simulation_init(n, radius, width, height, contagion_probs, recovery_ste
 			vy = Math.sin(theta)
 		}
 
-		health_status = (i==0) ? 1 :  0
+		health_status = (i < simulation.initially_sick) ? 1 :  0
 
 		simulation.subjects.push( {
 			px: Math.random() * simulation.width,
@@ -510,6 +513,12 @@ function reset_simulation()
 		return
 	}
 
+	let initially_sick = parseInt(global.ui.initially_sick_input.value)
+	if (isNaN(initially_sick)) {
+		alert("Error parsing Initially Sick")
+		return
+	}
+
 	let speed = parseInt(global.ui.speed_input.value)
 	global.speed = speed
 	if (isNaN(speed)) {
@@ -552,8 +561,9 @@ function reset_simulation()
 	}
 
 	// set global simulation
-	global.simulation = simulation_init(population, radius, panel_size, panel_size, contagion_probs, recovery_steps, social_distancing)
+	global.simulation = simulation_init(population, initially_sick, radius, panel_size, panel_size, contagion_probs, recovery_steps, social_distancing)
 	global.running = false
+	global.ui.play_input.value = global.running ? 'Pause' : 'Play'
 }
 
 
@@ -586,6 +596,23 @@ function main()
 			population_input.type = 'text'
 			population_input.value = '100'
 			global.ui.population_input = population_input
+		}
+	}
+
+	{
+		// initially sick 
+		let row = table.appendChild(document.createElement('tr'))
+		{
+			let col = row.appendChild(document.createElement('td'));
+			let label = col.appendChild(document.createElement('label'));
+			label.innerText='Initially Sick:'
+		}
+		{
+			let col = row.appendChild(document.createElement('td'));
+			let initially_sick_input = col.appendChild(document.createElement('input'));
+			initially_sick_input.type = 'text'
+			initially_sick_input.value = '1'
+			global.ui.initially_sick_input = initially_sick_input
 		}
 	}
 
@@ -704,12 +731,15 @@ function main()
 				if (!global.simulation) {
 					reset_simulation()
 					global.running = true
+					global.ui.play_input.value = 'Pause'
 					update()
 				} else {
 					global.running = !global.running
+					global.ui.play_input.value = global.running ? 'Pause' : 'Play' 
 					update()
 				}
 			});
+			global.ui.play_input = play_input 
 		}
 	}
 

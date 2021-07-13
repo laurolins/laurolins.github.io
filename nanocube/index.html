@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Nanocubes&reg;</title>
+    <link href="https://fonts.googleapis.com/css?family=Oxygen+Mono|Oxygen:400,300,700"
+	  rel="stylesheet" type="text/css"/>
+    <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
+    <link href="css/main.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-41718814-1']);
+  _gaq.push(['_trackPageview']);
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+  </head>
+  <body style="font-weight: 300; font-size: 1.6em;">
+    <div class="container">
+
+    <div class="jumbotron">
+      <div class="container">
+        <h1 style="text-align: right">Nanocubes<sup>&reg;</sup></h1>
+        <p style="text-align: right">Fast visualization of large spatiotemporal datasets</p>
+      </div>
+    </div>
+
+    The Nanocubes<sup>&reg;</sup> technology provides you with real-time visualization of large
+      datasets. Slice and dice your data with respect to space, time, or some of your data attributes,
+      and view the results in real-time on a web browser over heatmaps,
+      bar charts, and histograms.  We've used it for <a href="https://en.wikipedia.org/wiki/Carl_Sagan#Phrase_.27billions_and_billions.27" style="text:decoration: none; color: black">tens of billions</a> of data
+      points: maybe you can push it even farther!</p>
+
+      <div class="row">
+	<div class="col-md-3" style="padding-bottom:15px;
+	padding-top:15px"><img src="img/superbowl.jpg"></div>
+	<div class="col-md-3" style="padding-bottom:15px; padding-top:15px"><a href="/view.html#brightkite"><img src="img/brightkite.jpg"></a></div>
+	<div class="col-md-6" style="padding-bottom:15px; padding-top:15px"><img src="img/sfo.jpg"></div>
+      </div>
+
+      <div class="row">
+	<div class="col-md-3" style="padding-bottom:15px;
+	padding-top:15px"><a href="https://www.youtube.com/watch?v=8P9QA6TJwys"><img src="img/video1.jpg"></a></div>
+	<div class="col-md-6" style="padding-bottom:15px; padding-top:15px"><img src="img/chicago_crime.jpg"></div>
+	<div class="col-md-3" style="padding-bottom:15px;
+	padding-top:15px"><img src="img/heatmap_ny.jpg"></div>
+      </div>
+
+      <h3>How does it work</h3>
+      <p>The main Nanocubes program is a command-line utility that
+      processes your data and starts a web server to answer query
+      requests. We
+      provide <a href="https://github.com/laurolins/nanocube/blob/master/api/README.md">Javascript
+      APIs</a> for visualization. But the Nanocubes program can be used for fast
+      analysis of your data as well: you can think of it as a very
+      fast (if somehow limited) database query engine. As an
+      illustrative example, we have used anomaly detection routines to
+      query the Nanocubes engine and output potential outliers and hotspots. </p>
+
+      <h3><a name="paper"></a>Papers</h3>
+<ul>
+    <li>Lauro Lins, James T. Klosowski, and Carlos Scheidegger. Nanocubes for Real-Time Exploration of Spatiotemporal Datasets. Visualization and Computer Graphics, IEEE Transactions on 19, no. 12 (2013): 2456-2465. <span style="font-weight:400">Nominated for best paper award. <a href="https://nanocubes.net/assets/pdf/nanocubes_paper.pdf">PDF</a></span></p></li>
+
+    <li>A follow-up paper that extends the Nanocubes technology to handle top-k queries: <a href="https://ieeexplore.ieee.org/document/7858782/">TopKube: A Rank-Aware Data Cube for Real-Time Exploration of Spatiotemporal Data</a>.</p></li>
+
+    <li>
+    Lukas Scharlau (<a href="https://www.fh-muenster.de/index.php">FH Münster University of Applied Sciences</a>) has also studied how to build Nanocubes query engines in parallel for his <a href="https://www.hb.fh-muenster.de/opus/fhms/volltexte/2017/1279/">bachelor thesis</a>. <a href="https://www.hb.fh-muenster.de/opus/fhms/volltexte/2017/1279/pdf/Multi_part_Nanocubes_by_Lukas_Scharlau.pdf">PDF</a>
+    </li>
+</ul>
+
+    <h3><a name="demos"></a>Live Demos</h3>
+    <p>Interested? Try the live demos! All of these datasets are
+    running off of a single machine with 16GB of RAM. For the demos
+    not tagged as "tablet-friendly", you will need a WebGL capable
+    browser. We have tested it on Chrome and Firefox, but ourselves
+    use Chrome and OS X for development.</p>
+
+      <ul>
+	<li><a href="/nanocube-20191001/">Chicago Crimes (with 2018 user interface)</a>: 6.2M reported crimes from the
+	  <a href="https://data.cityofchicago.org/Public-Safety/Crimes-2001-to-present/ijzp-q8t2/data">City of Chicago Data Portal</a></li>
+	<li><a href="/view.html#brightkite">Brightkite (with 2013 user interface)</a>: 4.5M checkins from the
+      BrightKite social network, from the <a href="https://snap.stanford.edu/data/index.html">SNAP repository</a> (<a href="/leaflet/#brightkite">tablet-friendly version</a>)</li>
+	<li><a href="/view.html#gowalla">Gowalla (with 2013 user interface)</a>: 6.4M checkins from the
+	  Gowalla social network, from the <a href="http://snap.stanford.edu/data/index.html">SNAP repository</a> (<a href="/leaflet/#gowalla">tablet-friendly version</a>)</li>
+	<li><a href="/view.html#flights">ASA flights (with 2013 user interface)</a>: 121M
+	flight departures and arrivals from the <a href="http://stat-computing.org/dataexpo/2009/">2009 ASA Data Expo</a> (<a href="/leaflet/#flights">tablet-friendly version</a>)</li>
+      </ul>
+
+
+      <h3><a name="software"></a>Open Source</h3>
+      <p>Download our implementation of the Nanocubes technology <a href="http://nanocubes.net/assets/code/nanocubes-3.2.2.zip">here</a>.
+
+      <p>Full source code is hosted on
+      <a href="http://github.com/laurolins/nanocube">GitHub</a>.  Please file any bugs, feature requests, etc. as issues thru GitHub.
+      </p>
+
+      <h3><a name="people"></a>Team</h3>
+
+      <p><a href="mailto:llins@research.att.com?subject=Nanocubes support">Lauro Lins</a>,
+      <a href="mailto:jklosow@research.att.com?subject=Nanocubes support">Jim Klosowski</a>,
+      <a href="http://cscheid.net">Carlos Scheidegger</a>, <a href="http://www.cs.umd.edu/~ipcy/">Horace C. Y. Ip</a>.
+
+      <h3>Why the strange name?</h3>
+
+      <p>The Nanocubes technology builds
+      on <a href="http://en.wikipedia.org/wiki/OLAP_cube">data
+      cube</a> technology. Until recently, data cubes took a very
+      large amount of space. This means they could not be stored in
+      main memory, so their computation and access for large datasets did
+      not mix well with interactive visualization. Our main
+      innovation is an algorithm for hierarchical data cubes that has very modest
+      memory requirements. So it is just like a data cube, but it's
+      tiny! We thought "Nanocubes" sounded better than "tiny cubes".</p>
+
+      <h3>Awards</h3>
+      <ul>
+      <li><b>Oct 2014</b> Won Gold Award for the Best New Product or Service of the Year at the <a href="http://www.stevieawards.com/pubs/iba/awards/408_2942_24967.cfm">2014 International Business Awards</a>.</li>
+      <li><b>Sep 2014</b> Won Gold Award for Technology Innovation of the Year at the <a href="http://www.stevieawards.com/pubs/awards/403_2941_24914.cfm">2014 American Business Awards</a>.</li>
+      <li><b>Apr 2014</b> Won Gold Award for Research and Business Optimization at the <a href="http://www.edisonawards.com/winners2014.php">2014 Edison Awards</a>.</li>
+      <li><b>Oct 2013</b> Awarded InfoVis Best Paper Honorable Mention <a href="http://ieeevis.org/year/2013/info/overview-amp-topics/awards"> 2013 IEEE Vis Conference</a>.</li>
+      </ul>
+
+      <h3>In the News</h3>
+      <ul>
+      <li><b>Sep 2017</b> AT&T Innovation Blog: <a href="http://about.att.com/innovationblog/eclipse_network">Total Eclipse of the Network</a>.</li>
+      <li><b>Mar 2016</b> The New IP: <a href="http://www.thenewip.net/document.asp?doc_id=721755&site=thenewip&/">AT&T's Nanocubes Brings Data Analytics to Life</a>.</li>
+      <li><b>Feb 2016</b> Inside Big Data: <a href="http://insidebigdata.com/2016/02/10/how-open-source-is-driving-new-innovations-in-data-analytics/">How Open Source is Driving New Innovations in Data Analytics</a>.</li>
+      <li><b>Feb 2016</b> The Examiner: <a href="http://www.examiner.com/article/eighty-one-million-social-media-posts-with-pictures-during-super-bowl-says-at-t">Eighty-One Million Social Media Posts with Pictures during Super Bowl</a>.</li>
+      <li><b>Feb 2016</b> AT&T Innovation Blog: <a href="http://about.att.com/innovationblog/020816datarecord">New Data Record Set at Big Game by the Bay</a>.</li>
+      <li><b>Feb 2016</b> AT&T Newsroom: <a href="http://about.att.com/newsroom/social_media_fan_support_among_teams.html">Denver vs Carolina: Revealing the Loudest Fans on Social</a>.</li>
+      <li><b>Jan 2016</b> AT&T Innovation Blog: <a href="http://about.att.com/innovationblog/010516healthcare">Expanding Innovation in Healthcare, the Internet of Things, Big Data and Open Source</a>.</li>
+      <li><b>Apr 2015</b> Astronomy Computing Today: <a href="https://astrocompute.wordpress.com/2015/04/23/interactive-visualization-of-billion-point-data-sets-nanocubes">Interactive Visualization of Billion-Point Data Sets: Nanocubes</a>.</li>
+      <li><b>Apr 2015</b> AT&T Innovation Blog: <a href="http://about.att.com/innovationblog/41315apolicyengine">A Policy (Engine) for Open Source</a>.</li>
+      <li><b>May 2014</b> Mashable: <a href="http://mashable.com/2014/05/18/att-innovation-showcase/?utm_cid=mash-co">AT&T Innovation Showcase Features Trackable Luggage, Big Data Visualizers</a>.</li>
+      <li><b>May 2014</b> VentureBeat: <a href="http://venturebeat.com/2014/05/16/5-of-the-coolest-projects-in-the-works-at-atts-innovation-centers/">5 of the Coolest Projects in the Works at AT&T's Innovation Centers</a>.</li>
+      <li><b>May 2014</b> FierceWirelessTech: <a href="http://www.fiercewireless.com/tech/story/atts-open-source-nanocube-data-analytics-wins-accolade/2014-05-04">AT&T's Open Source Nanocube for Data Analytics Wins Accolade</a>.</li>
+      <li><b>May 2014</b> AT&T Technology Innovation Showcase: <a href="http://www.att.com/gen/press-room?pid=23887">Mobilizing Your World: A Look Ahead at Next-Generation Techonlogies</a>.</li>
+      <li><b>Nov 2013</b> InformationWeek: <a href="http://www.informationweek.com/big-data/hardware-architectures/analyze-46-petabytes-of-data-via-laptop-heres-how-/d/d-id/898908">Analyze 46 Petabytes of Data Via Laptop?  Here's How</a>.</li>
+      <li><b>Oct 2013</b> AT&T Newsroom: <a href="http://about.att.com/newsroom/from_digits_to_diagrams.html">From Digits to Diagrams</a>.</li>
+      <li><b>Oct 2013</b> AT&T Research: <a href="http://www.research.att.com/articles/featured_stories/2013_10/201310_nanocubes.html">Into Main Memory: Nanocubes for Interactively Visualizing Billion-Point Data Sets</a>.</li>
+      </ul>
+
+      <h3>Acknowledgments</h3>
+      <p>This project uses a litany of open-source projects and software,
+	for which we are incredibly grateful. In no
+	particular order, we want to acknowledge our use of: <a href="http://twitter.github.io/bootstrap/">Bootstrap</a>, <a href="http://bootstraptour.com/">Bootstrap
+	Tour</a>, <a href="http://jquery.com">jQuery</a>, <a href="http://underscorejs.org">Underscore.js</a>,
+	<a href="http://d3js.org">d3</a>, <a href="http://www.openstreetmap.org">OpenStreetMap</a>, <a href="http://leafletjs.com">Leaflet.js</a>,
+	and <a href="http://github.com/cscheid/lux">Lux</a>.</p>
+
+<p>In addition, we wish to acknowledge the comments, suggestions and help of Stephen North, Drew Skau, Hadley Wickham, Luiz Scheidegger, Chris Volinsky, Simon Urbanek, Robert Kosara, John Moeller, David Kormann, T.J. Jankun-Kelly and Steve Haroz.</p>
+
+      <!-- <h3>Three equal columns</h3> -->
+      <!-- <p>Get three equal-width columns <strong>starting at desktops and scaling to large desktops</strong>. On mobile devices, tablets and below, the columns will automatically stack.</p> -->
+      <!-- <div class="row"> -->
+      <!--   <div class="col-md-4">.col-md-4</div> -->
+      <!--   <div class="col-md-4">.col-md-4</div> -->
+      <!--   <div class="col-md-4">.col-md-4</div> -->
+      <!-- </div> -->
+
+      <!-- <h3>Three unequal columns</h3> -->
+      <!-- <p>Get three columns <strong>starting at desktops and scaling to large desktops</strong> of various widths. Remember, grid columns should add up to twelve for a single horizontal block. More than that, and columns start stacking no matter the viewport.</p> -->
+      <!-- <div class="row"> -->
+      <!--   <div class="col-md-3">.col-md-3</div> -->
+      <!--   <div class="col-md-6">.col-md-6</div> -->
+      <!--   <div class="col-md-3">.col-md-3</div> -->
+      <!-- </div> -->
+
+      <!-- <h3>Two columns</h3> -->
+      <!-- <p>Get two columns <strong>starting at desktops and scaling to large desktops</strong>.</p> -->
+      <!-- <div class="row"> -->
+      <!--   <div class="col-md-8">.col-md-8</div> -->
+      <!--   <div class="col-md-4">.col-md-4</div> -->
+      <!-- </div> -->
+
+      <!-- <h3>Full width, single column</h3> -->
+      <!-- <p class="text-warning">No grid classes are necessary for full-width elements.</p> -->
+
+      <!-- <hr> -->
+
+      <!-- <h3>Two columns with two nested columns</h3> -->
+      <!-- <p>Per the documentation, nesting is easy—just put a row of columns within an existing column. This gives you two columns <strong>starting at desktops and scaling to large desktops</strong>, with another two (equal widths) within the larger column.</p> -->
+      <!-- <p>At mobile device sizes, tablets and down, these columns and their nested columns will stack.</p> -->
+      <!-- <div class="row"> -->
+      <!--   <div class="col-md-8"> -->
+      <!--     .col-md-8 -->
+      <!--     <div class="row"> -->
+      <!--       <div class="col-md-6">.col-md-6</div> -->
+      <!--       <div class="col-md-6">.col-md-6</div> -->
+      <!--     </div> -->
+      <!--   </div> -->
+      <!--   <div class="col-md-4">.col-md-4</div> -->
+      <!-- </div> -->
+
+      <!-- <hr> -->
+
+      <!-- <h3>Mixed: mobile and desktop</h3> -->
+      <!-- <p>The Bootstrap 3 grid system has four tiers of classes: xs (phones), sm (tablets), md (desktops), and lg (larger desktops). You can use nearly any combination of these classes to create more dynamic and flexible layouts.</p> -->
+      <!-- <p>Each tier of classes scales up, meaning if you plan on setting the same widths for xs and sm, you only need to specify xs.</p> -->
+      <!-- <div class="row"> -->
+      <!--   <div class="col-xs-12 col-md-8">.col-xs-12 .col-md-8</div> -->
+      <!--   <div class="col-xs-6 col-md-4">.col-xs-6 .col-md-4</div> -->
+      <!-- </div> -->
+      <!-- <div class="row"> -->
+      <!--   <div class="col-xs-6 col-md-4">.col-xs-6 .col-md-4</div> -->
+      <!--   <div class="col-xs-6 col-md-4">.col-xs-6 .col-md-4</div> -->
+      <!--   <div class="col-xs-6 col-md-4">.col-xs-6 .col-md-4</div> -->
+      <!-- </div> -->
+      <!-- <div class="row"> -->
+      <!--   <div class="col-xs-6">.col-xs-6</div> -->
+      <!--   <div class="col-xs-6">.col-xs-6</div> -->
+      <!-- </div> -->
+
+      <!-- <hr> -->
+
+      <!-- <h3>Mixed: mobile, tablet, and desktop</h3> -->
+      <!-- <p></p> -->
+      <!-- <div class="row"> -->
+      <!--   <div class="col-xs-12 col-sm-6 col-lg-8">.col-xs-12 .col-sm-6 .col-lg-8</div> -->
+      <!--   <div class="col-xs-6 col-lg-4">.col-xs-6 .col-lg-4</div> -->
+      <!-- </div> -->
+      <!-- <div class="row"> -->
+      <!--   <div class="col-xs-6 col-sm-4">.col-xs-6 .col-sm-4</div> -->
+      <!--   <div class="col-xs-6 col-sm-4">.col-xs-6 .col-sm-4</div> -->
+      <!--   <div class="col-xs-6 col-sm-4">.col-xs-6 .col-sm-4</div> -->
+      <!-- </div> -->
+
+      <!-- <hr> -->
+
+      <!-- <h3>Column clearing</h3> -->
+      <!-- <p><a href="http://getbootstrap.com/css/#grid-responsive-resets">Clear floats</a> at specific breakpoints to prevent awkward wrapping with uneven content.</p> -->
+      <!-- <div class="row"> -->
+      <!--   <div class="col-xs-6 col-sm-3"> -->
+      <!--     .col-xs-6 .col-sm-3 -->
+      <!--     <br> -->
+      <!--     Resize your viewport or check it out on your phone for an example. -->
+      <!--   </div> -->
+      <!--   <div class="col-xs-6 col-sm-3">.col-xs-6 .col-sm-3</div> -->
+
+      <!--   <\!-- Add the extra clearfix for only the required viewport -\-> -->
+      <!--   <div class="clearfix visible-xs"></div> -->
+
+      <!--   <div class="col-xs-6 col-sm-3">.col-xs-6 .col-sm-3</div> -->
+      <!--   <div class="col-xs-6 col-sm-3">.col-xs-6 .col-sm-3</div> -->
+      <!-- </div> -->
+
+      <!-- <hr> -->
+
+      <!-- <h3>Offset, push, and pull resets</h3> -->
+      <!-- <p>Reset offsets, pushes, and pulls at specific breakpoints.</p> -->
+      <!-- <div class="row"> -->
+      <!--   <div class="col-sm-5 col-md-6">.col-sm-5 .col-md-6</div> -->
+      <!--   <div class="col-sm-5 col-sm-offset-2 col-md-6 col-md-offset-0">.col-sm-5 .col-sm-offset-2 .col-md-6 .col-md-offset-0</div> -->
+      <!-- </div> -->
+      <!-- <div class="row"> -->
+      <!--   <div class="col-sm-6 col-md-5 col-lg-6">.col-sm-6 .col-md-5 .col-lg-6</div> -->
+      <!--   <div class="col-sm-6 col-md-5 col-md-offset-2 col-lg-6 col-lg-offset-0">.col-sm-6 .col-md-5 .col-md-offset-2 .col-lg-6 .col-lg-offset-0</div> -->
+      <!-- </div> -->
+
+
+    </div> <!-- /container -->
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="js/bootstrap.min.js"></script>
+  </body>
+</html>

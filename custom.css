@@ -1,0 +1,20 @@
+ body {
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        text-align: left;
+}
+
+
+/* reset heading/link fonts to that of body */
+.md a,
+.md div.title, contents, .md .tocHeader,
+.md h1, .md h2, .md h3, .md h4, .md h5, .md h6,
+.md .nonumberh1, .md .nonumberh2, .md .nonumberh3, .md .nonumberh4, .md .nonumberh5, .md .nonumberh6,
+.md .shortTOC, .md .mediumTOC, .md .longTOC {
+	font-family: inherit;
+}
+.md div.title {
+	font-size: 24px;
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        font-weight: normal;
+        text-align: left;
+}
